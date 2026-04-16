@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mcp-distill</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --border: #1a1a1a;
+            --text-primary: #e5e5e5;
+            --text-secondary: #737373;
+            --accent: #10b981;
+            --accent-hover: #34d399;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--bg);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 3.5em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .tagline {
+            font-size: 1.25em;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-weight: 400;
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-size: 0.8em;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .badge-accent {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .header-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .header-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: color 0.15s ease;
+        }
+
+        .header-links a:hover {
+            color: var(--accent-hover);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .section-header .number {
+            color: var(--accent);
+        }
+
+        .section-header .slash {
+            color: var(--text-secondary);
+            margin: 0 8px;
+        }
+
+        h2 {
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 40px 0 16px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        /* Code */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .inline-code {
+            background: var(--surface);
+            padding: 2px 6px;
+            border: 1px solid var(--border);
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+
+        .code-block {
+            position: relative;
+            margin: 24px 0;
+        }
+
+        .code-block pre {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--accent);
+            padding: 20px;
+            overflow-x: auto;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .code-block pre code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .code-header {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            padding: 8px 16px;
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .code-block .code-header + pre {
+            border-top: none;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .copy-btn:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .copy-btn.copied {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Terminal commands */
+        .terminal {
+            background: #000000;
+            border: 1px solid var(--border);
+            padding: 16px;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .terminal code {
+            color: var(--text-primary);
+            font-size: 0.9em;
+        }
+
+        .terminal .prompt {
+            color: var(--accent);
+            margin-right: 8px;
+        }
+
+        /* Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin: 40px 0;
+        }
+
+        .comparison-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 24px;
+        }
+
+        .comparison-card.before {
+            border-left: 3px solid var(--danger);
+        }
+
+        .comparison-card.after {
+            border-left: 3px solid var(--accent);
+        }
+
+        .comparison-card h4 {
+            font-size: 0.85em;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .token-count {
+            font-size: 2em;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .comparison-card.before .token-count {
+            color: var(--danger);
+        }
+
+        .comparison-card.after .token-count {
+            color: var(--accent);
+        }
+
+        .savings-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--accent);
+            color: var(--bg);
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-top: 12px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--surface);
+            font-weight: 600;
+            font-size: 0.85em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        td code {
+            color: var(--accent);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-hover);
+        }
+
+        footer .separator {
+            margin: 0 12px;
+            color: var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5em;
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            header {
+                padding: 60px 0 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">mcp-distill</h1>
+            <p class="tagline">Field projection layer for MCP tools. Reduce context window usage by up to 95%.</p>
+            <div class="status-badges">
+                <span class="badge badge-accent">Context Saved: ~95%</span>
+                <span class="badge">Zero Dependencies</span>
+            </div>
+            <div class="header-links">
+                <a href="https://github.com/shoegazerstella/mcp-distill">GitHub</a>
+                <a href="#installation">Get Started</a>
+            </div>
+        </header>
+
+        <main>
+            <section id="problem">
+                <div class="section-header">
+                    <span class="number">01</span><span class="slash">//</span>THE PROBLEM
+                </div>
+                <h2>Context Window Waste</h2>
+                <p>MCP tools often return large JSON responses. When an agent only needs a few fields, the full response wastes precious context window tokens.</p>
+
+                <div class="comparison">
+                    <div class="comparison-card before">
+                        <h4>Without mcp-distill</h4>
+                        <span class="token-count">1,157</span>
+                        <div class="code-block">
+                            <pre><code class="language-json">{
+  "id": "123",
+  "name": "Item",
+  "description": "...(2000 chars)...",
+  "metadata": {...},
+  "content": "...(10000 chars)..."
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="comparison-card after">
+                        <h4>With mcp-distill</h4>
+                        <span class="token-count">23</span>
+                        <div class="code-block">
+                            <pre><code class="language-json">{
+  "id": "123",
+  "name": "Item"
+}</code></pre>
+                        </div>
+                        <span class="savings-badge">-98% TOKENS</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="installation">
+                <div class="section-header">
+                    <span class="number">02</span><span class="slash">//</span>INSTALLATION
+                </div>
+                <h2>Get Started</h2>
+
+                <div class="terminal">
+                    <button class="copy-btn" onclick="copyCode(this, 'pip install git+https://github.com/shoegazerstella/mcp-distill.git')">Copy</button>
+                    <code><span class="prompt">❯</span>pip install git+https://github.com/shoegazerstella/mcp-distill.git</code>
+                </div>
+
+                <p style="color: var(--text-secondary); font-size: 0.9em;">Or with uv:</p>
+
+                <div class="terminal">
+                    <button class="copy-btn" onclick="copyCode(this, 'uv add git+https://github.com/shoegazerstella/mcp-distill.git')">Copy</button>
+                    <code><span class="prompt">❯</span>uv add git+https://github.com/shoegazerstella/mcp-distill.git</code>
+                </div>
+            </section>
+
+            <section id="quick-start">
+                <div class="section-header">
+                    <span class="number">03</span><span class="slash">//</span>QUICK START
+                </div>
+                <h2>Basic Usage</h2>
+
+                <div class="code-block">
+                    <div class="code-header">Python</div>
+                    <button class="copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                    <pre><code class="language-python">from fastmcp import FastMCP
+from mcp_distill import projectable
+
+mcp = FastMCP("my-server")
+
+@mcp.tool
+@projectable(fields=["id", "name", "metadata.created_by"])
+def get_resource(resource_id: str) -> dict:
+    """Fetch a resource by ID."""
+    return {
+        "id": resource_id,
+        "name": "Example Resource",
+        "description": "A" * 2000,      # Large field - not advertised
+        "metadata": {
+            "created_by": "admin",
+            "huge_audit_log": [...],    # Large field - not advertised
+        },
+        "content": "B" * 10000,         # Large field - not advertised
+    }</code></pre>
+                </div>
+            </section>
+
+            <section id="how-it-works">
+                <div class="section-header">
+                    <span class="number">04</span><span class="slash">//</span>HOW IT WORKS
+                </div>
+                <h2>Three Steps</h2>
+
+                <h3>1. Advertise available fields</h3>
+                <p>The <code class="inline-code">fields</code> parameter tells the agent what fields it can request:</p>
+                <div class="code-block">
+                    <pre><code class="language-python">@projectable(fields=["id", "name", "metadata.created_by"])</code></pre>
+                </div>
+
+                <h3>2. Agent sees them in tool description</h3>
+                <div class="code-block">
+                    <pre><code class="language-text">Tool: get_resource
+Description: Fetch a resource by ID.
+
+Projectable fields: id, name, metadata.created_by
+
+Parameters:
+  - resource_id: string (required)
+  - _fields: array of strings (optional)</code></pre>
+                </div>
+
+                <h3>3. Agent requests only what it needs</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                    <pre><code class="language-python"># Agent needs just ID and name
+get_resource(resource_id="123", _fields=["id", "name"])
+# Returns: {"id": "123", "name": "Example Resource"}
+
+# Agent needs everything (omits _fields)
+get_resource(resource_id="123")
+# Returns: full response</code></pre>
+                </div>
+            </section>
+
+            <section id="field-syntax">
+                <div class="section-header">
+                    <span class="number">05</span><span class="slash">//</span>FIELD SYNTAX
+                </div>
+                <h2>Supported Patterns</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pattern</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>field</code></td>
+                            <td>Top-level field</td>
+                            <td><code>"id"</code>, <code>"name"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>a.b.c</code></td>
+                            <td>Nested field (dot notation)</td>
+                            <td><code>"metadata.created_by"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>items.*</code></td>
+                            <td>All fields in object</td>
+                            <td><code>"config.*"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>*.field</code></td>
+                            <td>Field from all top-level objects</td>
+                            <td><code>"*.id"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>items.*.field</code></td>
+                            <td>Field from each item in array/dict</td>
+                            <td><code>"results.*.name"</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="advanced-usage">
+                <div class="section-header">
+                    <span class="number">06</span><span class="slash">//</span>ADVANCED USAGE
+                </div>
+                <h2>Additional APIs</h2>
+
+                <h3>Standalone function</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                    <pre><code class="language-python">from mcp_distill import project
+
+data = {
+    "id": 1,
+    "name": "Item",
+    "nested": {"a": 1, "b": 2},
+    "large_blob": "x" * 10000,
+}
+
+result = project(data, ["id", "name", "nested.a"])
+# {"id": 1, "name": "Item", "nested": {"a": 1}}</code></pre>
+                </div>
+
+                <h3>Reusable projector</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                    <pre><code class="language-python">from mcp_distill import Projector
+
+slim = Projector(["id", "name", "status"])
+
+for item in large_dataset:
+    yield slim.apply(item)</code></pre>
+                </div>
+
+                <h3>Decorator on any function</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCodeBlock(this)">Copy</button>
+                    <pre><code class="language-python">from mcp_distill import projectable
+
+@projectable(fields=["id", "name", "email"])
+def fetch_user(user_id: str) -> dict:
+    return db.get_user(user_id)
+
+# With projection
+fetch_user("123", _fields=["id", "name"])
+
+# Without projection (full response)
+fetch_user("123")</code></pre>
+                </div>
+            </section>
+
+            <section id="api-reference">
+                <div class="section-header">
+                    <span class="number">07</span><span class="slash">//</span>API REFERENCE
+                </div>
+                <h2>Core Functions</h2>
+
+                <h3>@projectable</h3>
+                <div class="code-block">
+                    <pre><code class="language-python">@projectable(
+    fields=["id", "name", ...],  # Available fields (shown to agent)
+    field_param="_fields",       # Parameter name (default: "_fields")
+    field_description="...",     # Custom parameter description
+)</code></pre>
+                </div>
+
+                <h3>project(data, fields)</h3>
+                <div class="code-block">
+                    <pre><code class="language-python">project(data: Any, fields: list[str] | None) -> Any</code></pre>
+                </div>
+
+                <h3>Projector</h3>
+                <div class="code-block">
+                    <pre><code class="language-python">projector = Projector(["id", "name"])
+result = projector.apply(data)</code></pre>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>
+                <a href="https://github.com/shoegazerstella/mcp-distill">GitHub</a>
+                <span class="separator">·</span>
+                <a href="https://github.com/shoegazerstella/mcp-distill/issues">Issues</a>
+                <span class="separator">·</span>
+                <a href="https://github.com/shoegazerstella/mcp-distill/blob/main/LICENSE">MIT License</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        function copyCode(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function copyCodeBlock(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const code = pre.querySelector('code');
+            const text = code.textContent;
+            copyCode(btn, text);
+        }
+    </script>
+</body>
+</html>
